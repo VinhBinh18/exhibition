@@ -1,25 +1,10 @@
-import { fetchCategories } from "@/utils/api/categories";
-
-import { TopAdvertise } from "./(home)/_components/top-advertise";
-
-import { Footer } from "@/components/global/home/footer";
 import { Header } from "@/components/global/home/header/header";
-import { NavMobile } from "@/components/global/home/header/nav-mobile";
-import { ConditionalChatMessage } from "@/components/global/chat-message/conditional-chat-message";
+import { Footer } from "@/components/global/home/footer";
 
-export default async function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const categories = await fetchCategories();
-
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <TopAdvertise />
-      <Header categories={categories} />
-      <NavMobile />
-      <ConditionalChatMessage />
+      <Header />
       <main>{children}</main>
       <Footer />
     </>

@@ -1,5 +1,11 @@
 export const getIconForCategory = (name: string) => {
   switch (name.toLowerCase()) {
+    case "manufacturing":
+      return "mdi:factory";
+    case "food":
+      return "mdi:food-apple-outline";
+    case "smart-city":
+      return "mdi:city-variant-outline";
     case "water":
       return "mdi:water";
     case "healthcare":

@@ -17,17 +17,16 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title:
-    "GEARVN - Máy tính cao cấp, Laptop thiết bị chơi game hàng đầu Việt Nam – GEARVN.COM",
+  title: "VietBest® Expo - Kết nối hội chợ triển lãm, mở rộng cơ hội kinh doanh",
   description:
-    "GEARVN hệ thống bán lẻ cung cấp Hi-End PC, laptop, máy tính và thiết bị gaming gear chuyên nghiệp hàng đầu Việt Nam, hotline: 1900 5301",
-  metadataBase: new URL("https://gearvn.com"),
+    "Nền tảng truyền thông sự kiện và xúc tiến thương mại, kết nối doanh nghiệp với hội chợ triển lãm tại Việt Nam và quốc tế.",
+  metadataBase: new URL("https://expo.vietbest.vn"),
   openGraph: {
-    title: "GEARVN - Máy tính cao cấp, Laptop, Gaming Gear",
+    title: "VietBest® Expo",
     description:
-      "GEARVN cung cấp Hi-End PC, laptop, máy tính và thiết bị gaming gear hàng đầu Việt Nam",
-    url: "https://gearvn.com",
-    siteName: "GEARVN",
+      "Kết nối Ban tổ chức, Nhà trưng bày, Nhà mua hàng và Khách tham quan trong hệ sinh thái triển lãm.",
+    url: "https://expo.vietbest.vn",
+    siteName: "VietBest® Expo",
     locale: "vi_VN",
     type: "website",
   },

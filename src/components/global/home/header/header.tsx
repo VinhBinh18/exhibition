@@ -1,112 +1,96 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
+import { useState } from "react";
+import { ChevronDown, Menu } from "lucide-react";
+
+import { EXPO_BRAND, EXPO_NAV } from "@/constants/expo/home";
 
 import {
-  MapPin,
-  Loader,
-  Headset,
-  UserRound,
-  ClipboardClock,
-} from "lucide-react";
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetTitle,
+  SheetHeader,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
-import { USE_MOCK_API, USER_ROLE } from "@/config.global";
-import { CategoryType } from "@/types/category";
-import { useMe } from "@/react-query/query/user";
-import { useAuthModal } from "@/stores/use-auth-modal";
+const DesktopNav = () => (
+  <nav className="hidden md:flex items-center gap-8">
+    <Link
+      href={EXPO_NAV.home.href}
+      className="text-sm font-medium text-slate-700 hover:text-primary"
+    >
+      {EXPO_NAV.home.label}
+    </Link>
 
-import { UserSettings } from "./user-settings";
-import { CartDropdown } from "./cart-dropdown";
-import { SearchProducts } from "./search-products";
-import { CategoriesMenu } from "./categories-menu";
+    <DropdownMenu>
+      <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-primary outline-none">
+        {EXPO_NAV.exhibitions.label}
+        <ChevronDown className="size-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-56">
+        {EXPO_NAV.exhibitions.children.map((item) => (
+          <DropdownMenuItem key={item.href} asChild>
+            <Link href={item.href}>{item.label}</Link>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
 
-import { Button } from "@/components/ui/button";
+    <Link
+      href={EXPO_NAV.contact.href}
+      className="text-sm font-medium text-slate-700 hover:text-primary"
+    >
+      {EXPO_NAV.contact.label}
+    </Link>
+  </nav>
+);
 
-export const Header = ({ categories }: { categories: CategoryType[] }) => {
-  const { setModal } = useAuthModal();
-  const { data: user, isPending } = useMe();
+export const Header = () => {
+  const [open, setOpen] = useState(false);
 
   return (
-    <header role="banner" className="bg-primary sticky top-0 z-50">
-      <div className="wrapper h-[70px] flex items-center justify-between gap-4 sm:gap-6 xl:gap-8">
-        <CategoriesMenu categories={categories} />
-
-        <Suspense>
-          <SearchProducts />
-        </Suspense>
-
-        <section
-          aria-label="Hotline hỗ trợ"
-          className="hidden lg:block flex-shrink-0 text-primary-foreground"
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+      <div className="wrapper h-16 flex items-center justify-between gap-4">
+        <Link
+          href="/"
+          className="text-lg font-bold tracking-tight text-slate-900"
         >
-          <Link href="tel:19005301" className="group flex items-center gap-2">
-            <Headset aria-hidden="true" className="flex-shrink-0" />
-            <p className="sr-only">Hotline hỗ trợ khách hàng</p>
-            <p className="hidden xl:block text-sm font-semibold whitespace-nowrap">
-              Hotline: <br />
-              <span className="group-hover:underline">1900 5301</span>
-            </p>
-          </Link>
-        </section>
+          {EXPO_BRAND}
+        </Link>
 
-        <section
-          aria-label="Hệ thống Showroom"
-          className="hidden lg:block flex-shrink-0 text-primary-foreground"
-        >
-          <Link
-            href="/showrooms"
-            title="Xem hệ thống showroom"
-            className="flex items-center gap-2"
+        <DesktopNav />
+
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger
+            className="md:hidden p-2 -mr-2 text-slate-800"
+            aria-label="Mở menu"
           >
-            <MapPin aria-hidden="true" className="flex-shrink-0" />
-            <p className="sr-only">Xem hệ thống Showroom</p>
-            <p className="hidden xl:block text-sm font-semibold">
-              Hệ thống <br /> Showroom
-            </p>
-          </Link>
-        </section>
-
-        {(user?.role === USER_ROLE.CUSTOMER || USE_MOCK_API) && (
-          <>
-            {user?.role === USER_ROLE.CUSTOMER && (
-              <section
-                aria-label="Tra cứu đơn hàng"
-                className="hidden lg:block flex-shrink-0 text-primary-foreground"
-              >
-                <Link
-                  href="/orders/lookup"
-                  title="Tra cứu đơn hàng"
-                  className="flex items-center gap-2"
-                >
-                  <ClipboardClock aria-hidden="true" className="flex-shrink-0" />
-                  <p className="sr-only">Tra cứu đơn hàng của bạn</p>
-                  <p className="hidden xl:block text-sm font-semibold">
-                    Tra cứu <br /> đơn hàng
-                  </p>
-                </Link>
-              </section>
-            )}
-
-            <CartDropdown />
-          </>
-        )}
-
-        {isPending ? (
-          <Loader className="flex-shrink-0 size-5 animate-spin text-white" />
-        ) : user ? (
-          <UserSettings user={user} />
-        ) : (
-          <Button
-            type="button"
-            aria-label="Đăng nhập tài khoản"
-            onClick={() => setModal("login")}
-            className="h-10 flex items-center gap-2 font-semibold bg-[#BE1529] hover:bg-[#BE1529] rounded-sm"
-          >
-            <UserRound className="size-5" aria-hidden="true" />
-            <p className="hidden xl:block">Đăng nhập</p>
-          </Button>
-        )}
+            <Menu className="size-5" />
+          </SheetTrigger>
+          <SheetContent side="right" className="w-72">
+            <SheetHeader>
+              <SheetTitle>{EXPO_BRAND}</SheetTitle>
+            </SheetHeader>
+            <nav className="mt-6 flex flex-col gap-4 px-4">
+              <Link href="/" onClick={() => setOpen(false)}>
+                {EXPO_NAV.home.label}
+              </Link>
+              <Link href="/trien-lam" onClick={() => setOpen(false)}>
+                Đang & Sắp diễn ra
+              </Link>
+              <Link href="/lien-he" onClick={() => setOpen(false)}>
+                {EXPO_NAV.contact.label}
+              </Link>
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

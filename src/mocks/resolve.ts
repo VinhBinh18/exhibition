@@ -1,4 +1,9 @@
 import { parseFilters } from "@/utils/filters";
+import {
+  sortExpoProducts,
+  uniqueMonths,
+  uniqueSorted,
+} from "@/utils/expo";
 import { CreateOrderPayload, Order } from "@/types/order";
 import { PaginatedResponse } from "@/types/global";
 
@@ -50,7 +55,20 @@ const filterProducts = (params: URLSearchParams) => {
   return MOCK_PRODUCTS.filter((product) => {
     if (event && product.event !== event) return false;
     if (category && product.category !== category) return false;
-    if (search && !product.name.toLowerCase().includes(search)) return false;
+    if (search) {
+      const haystack = [
+        product.name,
+        product.category,
+        product.attributes?.city,
+        product.attributes?.venue,
+        product.attributes?.country,
+        product.attributes?.month,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
 
     return Object.entries(attributes).every(([key, values]) => {
       if (!values.length) return true;
@@ -66,6 +84,7 @@ export const listMockProducts = (params: {
   search?: string;
   category?: string;
   event?: string;
+  sortBy?: string;
   attributes?: Record<string, string[]>;
 }) => {
   const searchParams = new URLSearchParams();
@@ -81,12 +100,22 @@ export const listMockProducts = (params: {
     );
   }
 
+  const items = filterProducts(searchParams);
+
   return paginate(
-    filterProducts(searchParams),
+    params.sortBy ? sortExpoProducts(items, params.sortBy) : items,
     params.page ?? 1,
     params.limit ?? 20
   );
 };
+
+export const getMockExpoFilterOptions = () => ({
+  countries: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.country)),
+  cities: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.city)),
+  venues: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.venue)),
+  years: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.year)),
+  months: uniqueMonths(MOCK_PRODUCTS.map((item) => item.attributes?.month)),
+});
 
 export const getMockProductBySlug = (slug: string) =>
   MOCK_PRODUCTS.find((product) => product.slug === slug) ?? null;

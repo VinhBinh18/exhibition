@@ -40,7 +40,7 @@ export const ProductInfo = ({
 
   const finalPrice = useMemo(
     () => calculateFinalPrice(product.price, product.discountPercent),
-    [product.price, product.discountPercent]
+    [product.price, product.discountPercent],
   );
 
   const increase = () => setQuantity((q) => q + 1);
@@ -119,7 +119,7 @@ export const ProductInfo = ({
         disabled={role === USER_ROLE.ADMIN}
         className="w-full h-[70px] flex flex-col gap-1"
       >
-        <p className="text-lg font-bold uppercase">Đăng ký vé</p>
+        <p className="text-lg font-bold uppercase">Đăng ký gian hàng</p>
         <p className="text-sm">Tham dự tại địa điểm tổ chức</p>
       </Button>
 
