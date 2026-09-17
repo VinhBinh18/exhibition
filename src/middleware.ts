@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -9,6 +8,17 @@ const PROFILE_PATH = /^\/my-profile(\/|$)/;
 const SETTINGS_PATH = /^\/settings(\/|$)/;
 
 const SETTINGS_ROLE = USER_ROLE.CUSTOMER;
+
+const decodeJwtPayload = (token: string): { role?: string } | null => {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return null;
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(normalized));
+  } catch {
+    return null;
+  }
+};
 
 export const middleware = (req: NextRequest) => {
   if (USE_MOCK_API) {
@@ -22,7 +32,7 @@ export const middleware = (req: NextRequest) => {
     if (!token) {
       return NextResponse.redirect(new URL("/", req.url));
     }
-    const decoded = jwt.decode(token) as { role?: string } | null;
+    const decoded = decodeJwtPayload(token);
     if (!decoded || decoded.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", req.url));
     }
@@ -40,7 +50,7 @@ export const middleware = (req: NextRequest) => {
     if (!token) {
       return NextResponse.redirect(new URL("/", req.url));
     }
-    const decoded = jwt.decode(token) as { role?: string } | null;
+    const decoded = decodeJwtPayload(token);
     if (!decoded || decoded.role !== SETTINGS_ROLE) {
       return NextResponse.redirect(new URL("/", req.url));
     }

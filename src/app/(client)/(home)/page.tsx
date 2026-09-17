@@ -1,21 +1,16 @@
 import { fetchCategories } from "@/utils/api/categories";
-import { fetchUpcomingExpos } from "@/utils/api/products";
 
 import {
   ExpoCta,
   ExpoHero,
-  ExpoValues,
-  ExpoSupports,
-  ExpoJourneys,
-  ExpoUpcoming,
   ExpoIndustries,
+  ExpoJourneys,
+  ExpoSupports,
+  ExpoValues,
 } from "./_components/expo-home";
 
 const HomePage = async () => {
-  const [categories, expos] = await Promise.all([
-    fetchCategories(),
-    fetchUpcomingExpos(24),
-  ]);
+  const categories = await fetchCategories();
 
   return (
     <div className="bg-white">

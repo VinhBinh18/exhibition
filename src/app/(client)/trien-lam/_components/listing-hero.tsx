@@ -1,25 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Cpu,
-  Factory,
-  HeartPulse,
-  LayoutGrid,
-  Leaf,
-  ChevronRight,
-  UtensilsCrossed,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import { EXPO_LISTING_HERO } from "@/constants/expo/home";
-
-const HIGHLIGHT_ICONS = {
-  factory: Factory,
-  food: UtensilsCrossed,
-  tech: Cpu,
-  energy: Leaf,
-  health: HeartPulse,
-  more: LayoutGrid,
-} as const;
 
 export const ListingHero = () => (
   <section className="relative overflow-hidden bg-white">

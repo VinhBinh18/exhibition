@@ -1,9 +1,5 @@
 import { parseFilters } from "@/utils/filters";
-import {
-  sortExpoProducts,
-  uniqueMonths,
-  uniqueSorted,
-} from "@/utils/expo";
+import { sortExpoProducts, uniqueMonths, uniqueSorted } from "@/utils/expo";
 import { CreateOrderPayload, Order } from "@/types/order";
 import { PaginatedResponse } from "@/types/global";
 
@@ -22,10 +18,10 @@ type MockRequestOptions = {
   body?: unknown;
 };
 
-const paginate = <T,>(
+const paginate = <T>(
   items: T[],
   page = 1,
-  limit = 20
+  limit = 20,
 ): PaginatedResponse<T> => {
   const safePage = Number.isFinite(page) && page > 0 ? page : 1;
   const safeLimit = Number.isFinite(limit) && limit > 0 ? limit : 20;
@@ -96,7 +92,7 @@ export const listMockProducts = (params: {
       "attributes",
       Object.entries(params.attributes)
         .map(([k, v]) => `${k}=${v.join(",")}`)
-        .join(";")
+        .join(";"),
     );
   }
 
@@ -105,12 +101,14 @@ export const listMockProducts = (params: {
   return paginate(
     params.sortBy ? sortExpoProducts(items, params.sortBy) : items,
     params.page ?? 1,
-    params.limit ?? 20
+    params.limit ?? 20,
   );
 };
 
 export const getMockExpoFilterOptions = () => ({
-  countries: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.country)),
+  countries: uniqueSorted(
+    MOCK_PRODUCTS.map((item) => item.attributes?.country),
+  ),
   cities: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.city)),
   venues: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.venue)),
   years: uniqueSorted(MOCK_PRODUCTS.map((item) => item.attributes?.year)),
@@ -125,7 +123,7 @@ export const getMockRelatedProducts = (productId: string, limit = 10) => {
   const related = MOCK_PRODUCTS.filter(
     (product) =>
       product._id !== productId &&
-      (!current || product.category === current.category)
+      (!current || product.category === current.category),
   );
   return paginate(related, 1, limit);
 };
@@ -136,7 +134,7 @@ export const listMockBlogs = (page = 1, limit = 10, search = "") => {
     ? MOCK_BLOGS.filter(
         (blog) =>
           blog.title.toLowerCase().includes(keyword) ||
-          blog.summary.toLowerCase().includes(keyword)
+          blog.summary.toLowerCase().includes(keyword),
       )
     : MOCK_BLOGS;
 
@@ -170,10 +168,16 @@ const createMockOrder = (payload: CreateOrderPayload): Order => {
   return order;
 };
 
-export const resolveMock = (endpoint: string, options: MockRequestOptions = {}) => {
+export const resolveMock = (
+  endpoint: string,
+  options: MockRequestOptions = {},
+) => {
   const method = (options.method || "GET").toUpperCase();
 
-  if (endpoint.startsWith("http") && endpoint.includes("provinces.open-api.vn")) {
+  if (
+    endpoint.startsWith("http") &&
+    endpoint.includes("provinces.open-api.vn")
+  ) {
     return resolveVietnamMock(endpoint);
   }
 
@@ -201,9 +205,11 @@ export const resolveMock = (endpoint: string, options: MockRequestOptions = {}) 
 
   if (
     method === "POST" &&
-    ["/auth/register", "/auth/forgot-password", "/auth/reset-password"].includes(
-      path
-    )
+    [
+      "/auth/register",
+      "/auth/forgot-password",
+      "/auth/reset-password",
+    ].includes(path)
   ) {
     return { ok: true };
   }
@@ -232,21 +238,25 @@ export const resolveMock = (endpoint: string, options: MockRequestOptions = {}) 
   }
 
   if (path === "/categories") {
-    return paginate(MOCK_CATEGORIES, page, Math.max(limit, MOCK_CATEGORIES.length));
+    return paginate(
+      MOCK_CATEGORIES,
+      page,
+      Math.max(limit, MOCK_CATEGORIES.length),
+    );
   }
 
   const categoryFields = path.match(/^\/categories\/fields\/([^/]+)$/);
   if (categoryFields) {
     const category = MOCK_CATEGORIES.find(
-      (item) => item.name === decodeURIComponent(categoryFields[1])
+      (item) => item.name === decodeURIComponent(categoryFields[1]),
     );
     return category?.fields ?? [];
   }
 
   const categoryLabel = path.match(/^\/categories\/label\/([^/]+)$/);
   if (categoryLabel) {
-    const category = MOCK_CATEGORIES.find(
-      (item) => item.name === decodeURIComponent(categoryLabel[1])
+    const category: any = MOCK_CATEGORIES.find(
+      (item) => item.name === decodeURIComponent(categoryLabel[1]),
     );
     if (!category) notFound("Không tìm thấy danh mục");
     return { label: category.label };
