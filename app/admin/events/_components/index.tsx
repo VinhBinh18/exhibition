@@ -15,16 +15,14 @@ export const EventsPage = () => {
     serialize: (v) => String(v),
   });
   const [search] = useQueryState("search");
-  const [sortBy] = useQueryState("sortBy");
 
   const queryParams = useMemo(
     () => ({
       page: (page ?? 0) + 1,
       limit: 20,
-      sortBy: sortBy || "-createdAt",
-      search: search || undefined,
+      name: search || undefined,
     }),
-    [page, sortBy, search]
+    [page, search]
   );
 
   const { data: events, isPending } = useEvents(queryParams);

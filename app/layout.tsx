@@ -2,12 +2,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 
-import { Modals } from "@/components/modals";
 import { Toaster } from "@/components/ui/sonner";
 
 import { NuqsProvider } from "@/components/providers/nuqs-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { ResetStepGuard } from "@/components/guards/reset-step-guard";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -41,11 +39,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       <body className={`${manrope.variable} antialiased`}>
         <QueryProvider>
           <NuqsProvider>
-            <ResetStepGuard>
-              <Modals />
-              <Toaster />
-              {children}
-            </ResetStepGuard>
+            <Toaster />
+            {children}
           </NuqsProvider>
         </QueryProvider>
       </body>

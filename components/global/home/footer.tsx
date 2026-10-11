@@ -3,7 +3,10 @@ import Link from "next/link";
 import { EXPO_BRAND, EXPO_NAV } from "@/constants/expo/home";
 
 export const Footer = () => (
-  <footer className="bg-[#08052f] text-slate-300" aria-label="Thông tin cuối trang">
+  <footer
+    className="bg-[#08052f] text-slate-300"
+    aria-label="Thông tin cuối trang"
+  >
     <div className="wrapper py-12 lg:py-16 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
       <div className="space-y-3 lg:col-span-1">
         <p className="text-white text-lg font-semibold">{EXPO_BRAND}</p>
@@ -48,8 +51,8 @@ export const Footer = () => (
         <p>
           <span className="text-white font-medium">Email</span>
           <br />
-          <a href="mailto:contact@expo.vietbest.vn" className="hover:text-white">
-            contact@expo.vietbest.vn
+          <a href="mailto:Lechau2507@gmail.com" className="hover:text-white">
+            Lechau2507@gmail.com
           </a>
         </p>
         <p>

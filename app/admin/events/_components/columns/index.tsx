@@ -1,17 +1,14 @@
-import Image from "next/image";
-
 import { ColumnDef } from "@tanstack/react-table";
-import { Tag as TagIcon, Image as ImageIcon } from "lucide-react";
 
-import { EventType } from "@/types/event";
+import { ExhibitionEventRecord } from "@/types/records";
+import { eventDateLabel } from "@/lib/event-display";
 
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { ActionsCell } from "./actions-cell";
 import { SortableHeader } from "../../../_components/sortable-header";
 
-export const columns: ColumnDef<EventType>[] = [
+export const columns: ColumnDef<ExhibitionEventRecord>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -35,26 +32,6 @@ export const columns: ColumnDef<EventType>[] = [
   },
 
   {
-    accessorKey: "frame",
-    header: () => <span>Khung</span>,
-    cell: ({ row }) =>
-      row.original.frame ? (
-        <div className="relative w-16 h-16">
-          <Image
-            fill
-            alt={row.original.name}
-            src={row.original.frame}
-            className="object-contain"
-          />
-        </div>
-      ) : (
-        <ImageIcon className="size-4 text-muted-foreground" />
-      ),
-    enableSorting: false,
-    meta: { label: "Ảnh" },
-  },
-
-  {
     accessorKey: "name",
     header: () => <span>Tên sự kiện</span>,
     cell: ({ row }) => (
@@ -65,18 +42,20 @@ export const columns: ColumnDef<EventType>[] = [
   },
 
   {
-    accessorKey: "tag",
-    header: () => <span>Tag</span>,
-    cell: ({ row }) =>
-      row.original.tag ? (
-        <Badge variant="secondary" className="text-xs px-2 py-0.5 uppercase">
-          {row.original.tag}
-        </Badge>
-      ) : (
-        <TagIcon className="size-4 text-muted-foreground" />
-      ),
+    accessorKey: "location",
+    header: () => <span>Địa điểm</span>,
+    cell: ({ row }) => row.original.location,
     enableSorting: false,
-    meta: { label: "Tag" },
+    meta: { label: "Địa điểm" },
+  },
+
+  {
+    accessorKey: "fromDate",
+    header: () => <span>Thời gian</span>,
+    cell: ({ row }) =>
+      eventDateLabel(row.original.fromDate, row.original.toDate),
+    enableSorting: false,
+    meta: { label: "Thời gian" },
   },
 
   {

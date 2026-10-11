@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { MoreVertical, Clipboard, Edit, Trash } from "lucide-react";
 
-import { EventType } from "@/types/event";
+import { ExhibitionEventRecord } from "@/types/records";
 
 import {
   DropdownMenu,
@@ -17,11 +17,11 @@ import { toastSuccess } from "@/components/ui/toaster";
 import { ModalEditEvent } from "@/components/modals/admin/events/edit";
 import { ModalDeleteEvent } from "@/components/modals/admin/events/delete";
 
-export const ActionsCell = ({ event }: { event: EventType }) => {
+export const ActionsCell = ({ event }: { event: ExhibitionEventRecord }) => {
   const [openDropdown, setOpenDropdown] = useState(false);
 
   const handleCopyId = () => {
-    navigator.clipboard.writeText(event._id);
+    navigator.clipboard.writeText(event.id);
     toastSuccess("Đã sao chép ID", "Mã sự kiện đã được lưu vào clipboard.");
     setOpenDropdown(false);
   };

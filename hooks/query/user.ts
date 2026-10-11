@@ -2,7 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "../query-keys";
 import { USER_ROLE } from "@/lib/config";
-import { getMe, getUsers } from "@/lib/api/users";
+const getMe = async (..._args: unknown[]) => null;
+const getUsers = async (..._args: unknown[]) => ({
+  data: [],
+  page: 1,
+  limit: 10,
+  total: 0,
+  totalPages: 0,
+});
 import { useRoleStore } from "@/stores/use-role-store";
 
 import { User, UseUsersParams } from "@/types/user";

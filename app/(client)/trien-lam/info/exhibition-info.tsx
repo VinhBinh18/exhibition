@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowRight,
   CalendarDays,
@@ -9,15 +8,12 @@ import {
   Users,
 } from "lucide-react";
 
-import { ProductType } from "@/types/product";
-import { getEventBadge, getEventDate, expoInfoHref } from "@/lib/expo";
-
-import { EventCard } from "@/components/expo/event-card";
+import { ExhibitionEventRecord } from "@/types/records";
+import { eventDateLabel, eventTiming } from "@/lib/event-display";
 
 const TABS = [
   { id: "overview", label: "Tổng quan" },
   { id: "exhibit", label: "Trưng bày" },
-  { id: "gallery", label: "Thư viện" },
   { id: "location", label: "Địa điểm" },
 ];
 
@@ -28,55 +24,48 @@ const plainText = (value?: string) =>
     .trim();
 
 type ExhibitionInfoProps = {
-  event: ProductType;
-  related: ProductType[];
-  categoryLabel: string;
+  event: ExhibitionEventRecord;
 };
 
-export const ExhibitionInfo = ({
-  event,
-  related,
-  categoryLabel,
-}: ExhibitionInfoProps) => {
-  const badge = getEventBadge(event);
-  const dateLabel = getEventDate(event);
-  const city = String(event.attributes?.city || "");
-  const country = String(event.attributes?.country || "Việt Nam");
-  const venue = String(event.attributes?.venue || "");
-  const organizer = String(event.attributes?.organizer || "Ban tổ chức");
-  const eventType = String(event.attributes?.type || "Triển lãm thương mại");
-  const place = [venue, city, country].filter(Boolean).join(", ");
+export const ExhibitionInfo = ({ event }: ExhibitionInfoProps) => {
+  const badge = eventTiming(event.fromDate, event.toDate);
+  const dateLabel = eventDateLabel(event.fromDate, event.toDate);
   const summary = plainText(event.description);
-  const mapQuery = encodeURIComponent(place || city || country);
-  const calendarHref = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.name)}&details=${encodeURIComponent(summary)}&location=${encodeURIComponent(place)}`;
+  const place = event.location || "Đang cập nhật";
+  const mapQuery = encodeURIComponent(event.location || event.name);
+  const calendarHref = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.name)}&details=${encodeURIComponent(summary)}&location=${encodeURIComponent(event.location)}`;
 
   const facts = [
     {
       label: "Thời gian",
       value: dateLabel,
-      hint: "09:00 – 17:00 | GMT +7",
+      hint: "Theo lịch ban tổ chức",
       icon: Clock3,
     },
     {
       label: "Địa điểm",
-      value: place || "Đang cập nhật",
+      value: place,
       hint: "Xem bản đồ",
       icon: MapPin,
     },
-    { label: "Quy mô", value: "Đang cập nhật", hint: eventType, icon: Users },
     {
-      label: "Thị trường",
-      value: country,
-      hint: city || "Đang cập nhật",
+      label: "Hình thức",
+      value: "Triển lãm thương mại",
+      hint: badge.label,
+      icon: Users,
+    },
+    {
+      label: "Đăng ký",
+      value: "Mở nhận đăng ký",
+      hint: "Qua form liên hệ",
       icon: CalendarDays,
     },
   ];
 
   const highlights = [
-    `Trưng bày sản phẩm và giải pháp thuộc lĩnh vực ${categoryLabel}.`,
-    `Diễn ra ${dateLabel}${place ? ` tại ${place}` : ""}.`,
-    `Kết nối doanh nghiệp trưng bày với người mua, nhà phân phối và đối tác chuyên ngành.`,
-    `Đơn vị tổ chức: ${organizer}.`,
+    summary || `${event.name} kết nối doanh nghiệp trưng bày với người mua và đối tác.`,
+    `Diễn ra ${dateLabel}${event.location ? ` tại ${event.location}` : ""}.`,
+    "Doanh nghiệp có thể đăng ký gian hàng hoặc tham quan qua form liên hệ.",
   ];
 
   return (
@@ -101,40 +90,40 @@ export const ExhibitionInfo = ({
           <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="space-y-4">
               <span className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-primary">
-                {categoryLabel}
+                {badge.label}
               </span>
               <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                 {event.name}
               </h1>
               <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-                {summary ||
-                  `${event.name} là sự kiện ${eventType.toLowerCase()} thuộc lĩnh vực ${categoryLabel}.`}
+                {summary || `${event.name} là triển lãm thương mại mở đăng ký tham gia.`}
               </p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link
-                  href="/lien-he"
+                  href={`/lien-he?eventId=${encodeURIComponent(event.id)}`}
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
                 >
-                  Đăng ký gian hàng
+                  Đăng ký tham gia
                   <ArrowRight className="size-4" />
                 </Link>
+                <a
+                  href={calendarHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700"
+                >
+                  Thêm vào lịch
+                </a>
               </div>
             </div>
 
-            <div className="relative h-52 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:h-64">
-              <Image
-                fill
-                priority
-                alt={event.name}
-                src={event.images?.[0]}
-                className="object-cover"
-                sizes="320px"
-              />
+            <div className="relative flex h-52 items-end overflow-hidden rounded-2xl bg-gradient-to-br from-[#08052f] to-indigo-700 p-5 lg:h-64">
               <span
                 className={`absolute top-3 right-3 rounded-md px-2.5 py-1 text-xs font-semibold ${badge.className}`}
               >
                 {badge.label}
               </span>
+              <p className="text-xl font-semibold text-white">{event.name}</p>
             </div>
           </div>
 
@@ -175,12 +164,10 @@ export const ExhibitionInfo = ({
       <div className="wrapper grid gap-8 py-10 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-10">
           <section id="overview" className="scroll-mt-32 space-y-4">
-            <h2 className="text-2xl font-bold text-slate-900">
-              Tổng quan sự kiện
-            </h2>
+            <h2 className="text-2xl font-bold text-slate-900">Tổng quan sự kiện</h2>
             <p className="leading-relaxed text-slate-600">
               {summary ||
-                `${event.name} tập trung kết nối doanh nghiệp trưng bày với người mua và đối tác trong ngành ${categoryLabel}.`}
+                `${event.name} tập trung kết nối doanh nghiệp trưng bày với người mua và đối tác.`}
             </p>
             <ul className="space-y-2">
               {highlights.map((item) => (
@@ -196,66 +183,25 @@ export const ExhibitionInfo = ({
             <h2 className="text-2xl font-bold text-slate-900">
               Trưng bày tại {event.name}
             </h2>
-            <p className="text-sm leading-relaxed text-slate-600">
-              Giới thiệu sản phẩm, kết nối khách hàng tiềm năng và mở rộng cơ
-              hội kinh doanh trong lĩnh vực {categoryLabel}.
-            </p>
             <div className="rounded-2xl border border-slate-200 bg-white p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                Lĩnh vực trưng bày
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-slate-900">
-                {categoryLabel}
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Doanh nghiệp thuộc nhóm {eventType.toLowerCase()} có thể đăng ký
-                gian hàng để gặp người mua, nhà phân phối và đối tác chuyên
-                ngành.
+              <p className="text-sm text-slate-600">
+                Doanh nghiệp có thể đăng ký gian hàng để gặp người mua, nhà phân
+                phối và đối tác chuyên ngành.
               </p>
               <Link
-                href="/lien-he"
+                href={`/lien-he?eventId=${encodeURIComponent(event.id)}`}
                 className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary"
               >
-                Yêu cầu tư vấn gian hàng
+                Đăng ký triển lãm này
                 <ArrowRight className="size-4" />
               </Link>
-            </div>
-          </section>
-
-          <section id="gallery" className="scroll-mt-32 space-y-4">
-            <div className="flex items-end justify-between gap-4">
-              <h2 className="text-2xl font-bold text-slate-900">
-                Thư viện sự kiện
-              </h2>
-              <p className="text-sm text-slate-500">
-                {event.images?.length || 0} hình ảnh
-              </p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {event.images?.map((src) => (
-                <div
-                  key={src}
-                  className="relative h-56 overflow-hidden rounded-2xl border border-slate-200 bg-white"
-                >
-                  <Image
-                    fill
-                    src={src}
-                    alt={event.name}
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                </div>
-              ))}
             </div>
           </section>
 
           <section id="location" className="scroll-mt-32 space-y-4">
             <h2 className="text-2xl font-bold text-slate-900">Địa điểm</h2>
             <div className="rounded-2xl border border-slate-200 bg-white p-5">
-              <p className="font-semibold text-slate-900">
-                {venue || city || country}
-              </p>
-              <p className="mt-1 text-sm text-slate-600">{place}</p>
+              <p className="font-semibold text-slate-900">{place}</p>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
                 target="_blank"
@@ -273,11 +219,10 @@ export const ExhibitionInfo = ({
           <h2 className="text-lg font-bold text-slate-900">Thông tin nhanh</h2>
           <dl className="space-y-3 text-sm">
             {[
-              ["Tên ngắn", event.name],
-              ["Ngành", categoryLabel],
-              ["Loại hình", eventType],
-              ["Tổ chức", organizer],
-              ["Kỳ", String(event.attributes?.year || "2026")],
+              ["Tên", event.name],
+              ["Địa điểm", place],
+              ["Thời gian", dateLabel],
+              ["Trạng thái", badge.label],
             ].map(([label, value]) => (
               <div key={label}>
                 <dt className="text-slate-400">{label}</dt>
@@ -286,10 +231,10 @@ export const ExhibitionInfo = ({
             ))}
           </dl>
           <Link
-            href={expoInfoHref(event.slug, "gallery")}
+            href={`/lien-he?eventId=${encodeURIComponent(event.id)}`}
             className="inline-flex text-sm font-semibold text-primary"
           >
-            Xem thư viện
+            Đăng ký ngay
           </Link>
         </aside>
       </div>

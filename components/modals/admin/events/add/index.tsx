@@ -21,29 +21,24 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
 import { FormFields } from "./form-fields";
-import { ImageUpload } from "./image-upload";
 
 export const ModalAddEvent = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
 
-  const [previewFrame, setPreviewFrame] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      tag: "",
       name: "",
-      frame: undefined,
-      image: undefined,
+      location: "",
+      fromDate: "",
+      toDate: "",
+      description: "",
     },
   });
 
   const { mutate: createEvent, isPending } = useCreateEvent(() => {
     form.reset();
     setOpen(false);
-    setPreviewFrame(null);
-    setPreviewImage(null);
   });
 
   const onSubmit = (values: FormType) => {
@@ -64,24 +59,6 @@ export const ModalAddEvent = ({ children }: { children: React.ReactNode }) => {
             className="max-h-[85vh] space-y-6 px-3 -mx-3 overflow-y-auto custom-scroll"
           >
             <FormFields form={form} isPending={isPending} />
-
-            <ImageUpload
-              form={form}
-              name="frame"
-              isPending={isPending}
-              preview={previewFrame}
-              label="Khung ảnh sự kiện"
-              setPreview={setPreviewFrame}
-            />
-
-            <ImageUpload
-              form={form}
-              name="image"
-              label="Ảnh sự kiện"
-              isPending={isPending}
-              preview={previewImage}
-              setPreview={setPreviewImage}
-            />
 
             <DialogFooter>
               <Button

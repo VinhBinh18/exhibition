@@ -10,15 +10,15 @@ import {
 } from "@/types/auth";
 import { queryKeys } from "../query-keys";
 import { USER_ROLE } from "@/lib/config";
-import {
-  forgotPassword,
-  login,
-  logout,
-  register,
-  resetPassword,
-} from "@/lib/api/auth";
+const removed = async (..._args: unknown[]) => {
+  throw new Error("API auth đã được gỡ");
+};
+const forgotPassword = removed;
+const login = removed;
+const logout = removed;
+const register = removed;
+const resetPassword = removed;
 import { useRoleStore } from "@/stores/use-role-store";
-import { useCartStore } from "@/stores/use-cart-store";
 
 import { toastError, toastSuccess } from "@/components/ui/toaster";
 
@@ -109,7 +109,6 @@ export const useLogout = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { clearCart } = useCartStore();
   const { clearRole } = useRoleStore();
 
   return useMutation({
@@ -119,7 +118,6 @@ export const useLogout = () => {
       const { message, description } = data;
       toastSuccess(message, description);
 
-      clearCart();
       queryClient.clear();
       router.replace("/");
       clearRole();

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "../query-keys";
-import { getDashboardSummary } from "@/lib/api/dashboard";
+const getDashboardSummary = async (..._args: unknown[]) => ({});
 import { DashboardSummary } from "@/types/dashboard";
 
 export const useDashboardSummary = () =>

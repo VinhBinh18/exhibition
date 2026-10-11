@@ -1,13 +1,11 @@
-export const EXPO_BRAND = "VietBest® Expo";
+export const EXPO_BRAND = "Châu Trương Lê";
 
 export const EXPO_NAV = {
   home: { label: "Trang chủ", href: "/" },
   exhibitions: {
     label: "Triển lãm",
     href: "/trien-lam",
-    children: [
-      { label: "Đang & Sắp diễn ra", href: "/trien-lam" },
-    ],
+    children: [{ label: "Đang & Sắp diễn ra", href: "/trien-lam" }],
   },
   contact: { label: "Liên hệ", href: "/lien-he" },
 };

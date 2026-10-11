@@ -2,11 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { queryKeys } from "../query-keys";
 import { CreateCategoryPayload, UpdateCategoryPayload } from "@/types/category";
-import {
-  createCategory,
-  deleteCategory,
-  updateCategory,
-} from "@/lib/api/categories";
+const removed = async (..._args: unknown[]) => {
+  throw new Error("API danh mục đã được gỡ");
+};
+const createCategory = removed;
+const deleteCategory = removed;
+const updateCategory = removed;
 
 import { toastError, toastSuccess } from "@/components/ui/toaster";
 

@@ -2,7 +2,13 @@ import { queryKeys } from "@/hooks/query-keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { CreateUserPayload, EditUserPayload } from "@/types/user";
-import { banUser, createUser, deleteUser, editUser } from "@/lib/api/users";
+const removed = async (..._args: unknown[]) => {
+  throw new Error("API người dùng đã được gỡ");
+};
+const banUser = removed;
+const createUser = removed;
+const deleteUser = removed;
+const editUser = removed;
 
 import { toastError, toastSuccess } from "@/components/ui/toaster";
 

@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { AddressItem, getDistricts, getProvinces, getWards } from "@/lib/api/vietnam";
+export type AddressItem = { code: number; name: string };
 
-export type { AddressItem };
+const getProvinces = async (): Promise<AddressItem[]> => [];
+const getDistricts = async (_provinceCode?: string): Promise<AddressItem[]> => [];
+const getWards = async (_districtCode?: string): Promise<AddressItem[]> => [];
 
 export const useProvinces = () =>
   useQuery<AddressItem[]>({

@@ -2,7 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { queryKeys } from "../query-keys";
 import { CreateBlogPayload, UpdateBlogPayload } from "@/types/blog";
-import { createBlog, deleteBlog, updateBlog } from "@/lib/api/blogs";
+const removed = async (..._args: unknown[]) => {
+  throw new Error("API bài viết đã được gỡ");
+};
+const createBlog = removed;
+const deleteBlog = removed;
+const updateBlog = removed;
 
 import { toastError, toastSuccess } from "@/components/ui/toaster";
 

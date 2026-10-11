@@ -1,14 +1,16 @@
-import {
-  WardType,
-  DistrictType,
-  ProvinceType,
-  AddressFormData,
-} from "@/types/order";
+type NamedPlace = { code: number | string; name: string };
+
+type AddressFormData = {
+  ward?: string;
+  street?: string;
+  district?: string;
+  province?: string;
+};
 
 export const buildAddress = (
-  wards: WardType[],
-  provinces: ProvinceType[],
-  districts: DistrictType[],
+  wards: NamedPlace[],
+  provinces: NamedPlace[],
+  districts: NamedPlace[],
   data: AddressFormData
 ): string => {
   return [

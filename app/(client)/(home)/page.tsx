@@ -1,4 +1,4 @@
-import { fetchCategories } from "@/lib/api/categories";
+import { listPublicEvents } from "@/lib/supabase/public-events";
 
 import {
   ExpoCta,
@@ -6,18 +6,20 @@ import {
   ExpoIndustries,
   ExpoJourneys,
   ExpoSupports,
+  ExpoUpcoming,
   ExpoValues,
 } from "./_components/expo-home";
 
 const HomePage = async () => {
-  const categories = await fetchCategories();
+  const events = await listPublicEvents({ page: 1, limit: 8 });
 
   return (
     <div className="bg-white">
       <ExpoHero />
       <ExpoSupports />
       <ExpoJourneys />
-      <ExpoIndustries categories={categories} />
+      <ExpoIndustries categories={[]} />
+      {/* <ExpoUpcoming events={events.data} /> */}
       <ExpoValues />
       <ExpoCta />
     </div>

@@ -6,6 +6,7 @@ import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { ExhibitionEventRecord } from "@/types/records";
 import { formSchema, FormType } from "./form-schema";
 import { useUpdateEvent } from "@/hooks/mutation/event";
 
@@ -21,10 +22,11 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
 import { FormFields } from "./form-fields";
-import { ImageUpload } from "./image-upload";
+
+const dateInput = (value?: string) => (value ? value.slice(0, 10) : "");
 
 type ModalEditEventProps = {
-  event: any;
+  event: ExhibitionEventRecord;
   children: React.ReactNode;
   setOpenDropdown: (open: boolean) => void;
 };
@@ -36,36 +38,36 @@ export const ModalEditEvent = ({
 }: ModalEditEventProps) => {
   const [open, setOpen] = useState(false);
 
-  const [previewFrame, setPreviewFrame] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      tag: event.tag,
       name: event.name,
-      frame: undefined,
-      image: undefined,
+      location: event.location,
+      fromDate: dateInput(event.fromDate),
+      toDate: dateInput(event.toDate),
+      description: event.description,
     },
   });
 
   useEffect(() => {
     if (open) {
-      setPreviewFrame(event.frame || null);
-      setPreviewImage(event.image || null);
+      form.reset({
+        name: event.name,
+        location: event.location,
+        fromDate: dateInput(event.fromDate),
+        toDate: dateInput(event.toDate),
+        description: event.description,
+      });
     }
-  }, [open, event.frame, event.image]);
+  }, [open, event, form]);
 
   const { mutate: updateEvent, isPending } = useUpdateEvent(() => {
-    form.reset();
     setOpen(false);
-    setPreviewFrame(null);
-    setPreviewImage(null);
     setOpenDropdown(false);
   });
 
   const onSubmit = (values: FormType) => {
-    updateEvent({ id: event._id, ...values });
+    updateEvent({ id: event.id, ...values });
   };
 
   return (
@@ -81,25 +83,7 @@ export const ModalEditEvent = ({
             onSubmit={form.handleSubmit(onSubmit)}
             className="h-[85vh] space-y-6 px-3 -mx-3 overflow-y-auto custom-scroll"
           >
-            <FormFields form={form} disabled={isPending} />
-
-            <ImageUpload
-              form={form}
-              name="image"
-              label="Ảnh sự kiện"
-              disabled={isPending}
-              preview={previewImage}
-              setPreview={setPreviewImage}
-            />
-
-            <ImageUpload
-              form={form}
-              name="frame"
-              disabled={isPending}
-              preview={previewFrame}
-              label="Khung ảnh sự kiện"
-              setPreview={setPreviewFrame}
-            />
+            <FormFields form={form} isPending={isPending} />
 
             <DialogFooter>
               <Button

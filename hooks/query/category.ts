@@ -1,7 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "../query-keys";
-import { getCategories, getCategoryFields } from "@/lib/api/categories";
+const getCategories = async (..._args: unknown[]) => ({
+  data: [],
+  page: 1,
+  limit: 10,
+  total: 0,
+  totalPages: 0,
+});
+const getCategoryFields = async (..._args: unknown[]) => [];
 
 import {
   CategoryType,

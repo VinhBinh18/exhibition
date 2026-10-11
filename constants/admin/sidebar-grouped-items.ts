@@ -1,11 +1,8 @@
 import {
-  Box,
   Users,
   Layers,
-  Receipt,
   Calendar,
   Newspaper,
-  MessageSquare,
   LayoutDashboard,
 } from "lucide-react";
 
@@ -21,30 +18,12 @@ export const SIDEBAR_GROUPED_ITEMS = [
     ],
   },
   {
-    title: "Quản lý sản phẩm",
+    title: "Nội dung",
     items: [
-      { title: "Sản phẩm", url: "/admin/products", icon: Box },
-      { title: "Danh mục", url: "/admin/categories", icon: Layers },
-    ],
-  },
-  {
-    title: "Bán hàng",
-    items: [
-      { title: "Đơn hàng", url: "/admin/orders", icon: Receipt },
-      { title: "Khách hàng", url: "/admin/customers", icon: Users },
-    ],
-  },
-  {
-    title: "Nội dung & hệ thống",
-    items: [
-      { title: "Bài viết", url: "/admin/blogs", icon: Newspaper },
       { title: "Sự kiện", url: "/admin/events", icon: Calendar },
-    ],
-  },
-  {
-    title: "Hỗ trợ khách hàng",
-    items: [
-      { title: "Chat khách hàng", url: "/admin/chat", icon: MessageSquare },
+      { title: "Danh mục", url: "/admin/categories", icon: Layers },
+      { title: "Bài viết", url: "/admin/blogs", icon: Newspaper },
+      { title: "Khách hàng", url: "/admin/customers", icon: Users },
     ],
   },
 ];

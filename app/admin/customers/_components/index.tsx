@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import { useQueryState } from "nuqs";
 
-import { useUsers } from "@/hooks/query/user";
+import { useClients } from "@/hooks/query/client";
 
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
@@ -15,23 +15,21 @@ export const CustomersPage = () => {
     serialize: (v) => String(v),
   });
   const [search] = useQueryState("search");
-  const [sortBy] = useQueryState("sortBy");
 
   const queryParams = useMemo(
     () => ({
       page: (page ?? 0) + 1,
       limit: 20,
-      sortBy: sortBy || "-createdAt",
-      search: search || undefined,
+      name: search || undefined,
     }),
-    [page, sortBy, search]
+    [page, search]
   );
 
-  const { data: users, isPending } = useUsers(queryParams);
+  const { data: clients, isPending } = useClients(queryParams);
 
-  const tableData = users?.data ?? [];
-  const totalItems = users?.total ?? 0;
-  const pageCount = users?.totalPages ?? 0;
+  const tableData = clients?.data ?? [];
+  const totalItems = clients?.total ?? 0;
+  const pageCount = clients?.totalPages ?? 0;
 
   return (
     <div className="h-full p-4 space-y-4 border bg-white shadow-sm rounded-md">

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 import { CategoryType } from "@/types/category";
-import { ProductType } from "@/types/product";
+import { ExhibitionEventRecord } from "@/types/records";
 import {
   EXPO_HERO,
   EXPO_SUPPORTS,
@@ -52,7 +52,7 @@ export const ExpoSupports = () => (
     <div className="wrapper py-16 space-y-10">
       <div className="space-y-3 max-w-3xl">
         <h2 className="text-3xl font-bold text-slate-900">
-          Những cách VietBest® Expo hỗ trợ doanh nghiệp
+          Những cách chúng tôi hỗ trợ doanh nghiệp
         </h2>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -86,7 +86,7 @@ export const ExpoJourneys = () => (
         </h2>
         <p className="text-slate-600 leading-relaxed">
           Dù bạn đang tìm cơ hội trưng bày, tìm nguồn cung hay quảng bá một
-          triển lãm, VietBest® Expo giúp bạn tiếp cận thông tin và hành động phù
+          triển lãm, chúng tôi sẽ giúp bạn tiếp cận thông tin và hành động phù
           hợp với từng mục tiêu kinh doanh.
         </p>
       </div>
@@ -167,7 +167,7 @@ export const ExpoIndustries = ({
                       `Khám phá các hội chợ, triển lãm thuộc ngành ${category.label}.`}
                   </p>
                   <Link
-                    href={`/collections/${category.name}`}
+                    href="/trien-lam"
                     className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
                   >
                     Xem Triển lãm
@@ -199,7 +199,7 @@ export const ExpoValues = () => (
           Thông tin triển lãm rõ hơn. Quyết định kinh doanh dễ hơn.
         </h2>
         <p className="text-slate-600 leading-relaxed">
-          VietBest® Expo tổ chức thông tin triển lãm theo cách giúp doanh nghiệp
+          Chúng tôi tổ chức thông tin triển lãm theo cách giúp doanh nghiệp
           nhanh chóng hiểu sự kiện, đánh giá mức độ phù hợp và thực hiện bước
           tiếp theo theo mục tiêu kinh doanh.
         </p>
@@ -224,11 +224,9 @@ export const ExpoValues = () => (
 );
 
 export const ExpoUpcoming = ({
-  products,
-  categories,
+  events,
 }: {
-  products: ProductType[];
-  categories: CategoryType[];
+  events: ExhibitionEventRecord[];
 }) => (
   <section className="bg-white">
     <div className="wrapper py-16 space-y-10">
@@ -238,14 +236,14 @@ export const ExpoUpcoming = ({
             Sự kiện đang & sắp diễn ra
           </h2>
           <p className="text-slate-600">
-            {products.length} sự kiện đang mở đăng ký tham dự
+            {events.length} sự kiện đang mở đăng ký tham dự
           </p>
         </div>
         <Button asChild variant="outline" className="rounded-md w-fit">
           <Link href="/trien-lam">Xem tất cả</Link>
         </Button>
       </div>
-      <UpcomingEvents products={products} categories={categories} />
+      <UpcomingEvents events={events} />
     </div>
   </section>
 );

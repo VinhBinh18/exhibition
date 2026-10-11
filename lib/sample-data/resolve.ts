@@ -1,16 +1,13 @@
 import { parseFilters } from "@/lib/filters";
 import { sortExpoProducts, uniqueMonths, uniqueSorted } from "@/lib/expo";
-import { CreateOrderPayload, Order } from "@/types/order";
 import { PaginatedResponse } from "@/types/global";
 
-import { mockOrders } from "./orders";
 import { resolveVietnamMock } from "./vietnam";
 import {
   MOCK_BLOGS,
   MOCK_CATEGORIES,
   MOCK_EVENTS,
   MOCK_PRODUCTS,
-  MOCK_USER,
 } from "./data";
 
 type MockRequestOptions = {
@@ -141,33 +138,6 @@ export const listMockBlogs = (page = 1, limit = 10, search = "") => {
   return paginate(blogs, page, limit);
 };
 
-const createMockOrder = (payload: CreateOrderPayload): Order => {
-  const order: Order = {
-    _id: `ord-${Date.now()}`,
-    userId: MOCK_USER,
-    fullName: payload.fullName,
-    phone: payload.phone,
-    address: payload.address,
-    note: payload.note,
-    items: payload.items.map((item) => ({
-      productId:
-        MOCK_PRODUCTS.find((product) => product._id === item.productId) ??
-        MOCK_PRODUCTS[0],
-      quantity: item.quantity,
-    })),
-    totalAmount: payload.totalAmount,
-    orderCode: `GVN${Math.floor(100000 + Math.random() * 900000)}`,
-    orderStatus: "PROCESSING",
-    paymentStatus: payload.paymentMethod === "VNPAY" ? "PAID" : "PENDING",
-    paymentMethod: payload.paymentMethod,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  mockOrders.unshift(order);
-  return order;
-};
-
 export const resolveMock = (
   endpoint: string,
   options: MockRequestOptions = {},
@@ -281,32 +251,6 @@ export const resolveMock = (
   if (relatedBlogs) {
     const blogs = MOCK_BLOGS.filter((item) => item._id !== relatedBlogs[1]);
     return paginate(blogs, 1, 6);
-  }
-
-  if (path === "/orders" && method === "POST") {
-    return createMockOrder(options.body as CreateOrderPayload);
-  }
-
-  if (path === "/orders/me") {
-    return paginate(mockOrders, page, limit);
-  }
-
-  const orderByCode = path.match(/^\/orders\/code\/([^/]+)$/);
-  if (orderByCode) {
-    const order = mockOrders.find((item) => item.orderCode === orderByCode[1]);
-    if (!order) notFound("Không tìm thấy đơn hàng");
-    return order;
-  }
-
-  const orderById = path.match(/^\/orders\/([^/]+)$/);
-  if (orderById && method === "GET") {
-    const order = mockOrders.find((item) => item._id === orderById[1]);
-    if (!order) notFound("Không tìm thấy đơn hàng");
-    return order;
-  }
-
-  if (path === "/payment/vnpay/create" && method === "POST") {
-    return { paymentUrl: null };
   }
 
   if (method === "GET") {

@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 
-import { fetchBlogs } from "@/lib/api/blogs";
-
 import { PageClient } from ".";
 import { Breadcrumbs } from "@/components/global/breadcrumbs";
 
@@ -32,7 +30,8 @@ const BlogsPage = async ({ searchParams }: BlogsPageProps) => {
   const page = Number(params.page ?? 1);
   const search = (params.search ?? "").trim();
 
-  const blogs = await fetchBlogs({ page, limit: 6, search });
+  const blogs = { data: [], page, limit: 6, total: 0, totalPages: 0 };
+  void search;
 
   return (
     <div className="bg-[#f7f8f9]">

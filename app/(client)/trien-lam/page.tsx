@@ -1,13 +1,8 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 
-import { fetchCategories } from "@/lib/api/categories";
-import { fetchExpoFilterOptions, fetchExpos } from "@/lib/api/products";
-import {
-  EXPO_PAGE_SIZE,
-  categoryLabelOf,
-  expoQueryFromSearchParams,
-} from "@/lib/expo";
+import { EXPO_PAGE_SIZE } from "@/lib/expo";
+import { listPublicEvents } from "@/lib/supabase/public-events";
 
 import { EventCard } from "@/components/expo/event-card";
 import { EventFilters, EventSort } from "@/components/expo/event-filters";
@@ -26,13 +21,15 @@ type ExhibitionPageProps = {
 
 const ExhibitionPage = async ({ searchParams }: ExhibitionPageProps) => {
   const raw = (await searchParams) || {};
-  const query = { ...expoQueryFromSearchParams(raw), limit: EXPO_PAGE_SIZE };
-
-  const [result, categories, options] = await Promise.all([
-    fetchExpos(query),
-    fetchCategories(),
-    fetchExpoFilterOptions(),
-  ]);
+  const result = await listPublicEvents({
+    page: Number(raw.page) || 1,
+    limit: EXPO_PAGE_SIZE,
+    search: raw.search,
+    location: raw.venue || raw.city || raw.country,
+    year: raw.year,
+    month: raw.month,
+    sort: raw.sort,
+  });
 
   return (
     <div className="min-h-[70vh] bg-slate-50">
@@ -44,7 +41,7 @@ const ExhibitionPage = async ({ searchParams }: ExhibitionPageProps) => {
             <div className="h-28 animate-pulse rounded-2xl bg-indigo-50" />
           }
         >
-          <EventFilters categories={categories} options={options} />
+          <EventFilters categories={[]} options={result.options} />
         </Suspense>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -54,19 +51,19 @@ const ExhibitionPage = async ({ searchParams }: ExhibitionPageProps) => {
             </h2>
             <p className="text-sm text-slate-500">{result.total} sự kiện</p>
           </div>
-          <Suspense fallback={<div className="h-10 w-48 animate-pulse rounded-full bg-white" />}>
+          <Suspense
+            fallback={
+              <div className="h-10 w-48 animate-pulse rounded-full bg-white" />
+            }
+          >
             <EventSort />
           </Suspense>
         </div>
 
         {result.data.length ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {result.data.map((product) => (
-              <EventCard
-                key={product._id}
-                product={product}
-                categoryLabel={categoryLabelOf(product, categories)}
-              />
+            {result.data.map((event: any) => (
+              <EventCard key={event.id} event={event} />
             ))}
           </div>
         ) : (
@@ -77,7 +74,7 @@ const ExhibitionPage = async ({ searchParams }: ExhibitionPageProps) => {
 
         <EventPagination
           page={result.page}
-          totalPages={result.totalPages}
+          totalPages={result.total ? result.totalPages : 0}
           query={raw}
         />
       </div>

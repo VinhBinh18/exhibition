@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Loader } from "lucide-react";
 
-import { EventType } from "@/types/event";
+import { ExhibitionEventRecord } from "@/types/records";
 import { useDeleteEvent } from "@/hooks/mutation/event";
 
 import {
@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 type ModalDeleteEventProps = {
-  event: EventType;
+  event: ExhibitionEventRecord;
   children: React.ReactNode;
   setOpenDropdown?: (open: boolean) => void;
 };
@@ -71,7 +71,7 @@ export const ModalDeleteEvent = ({
           <Button
             variant="destructive"
             disabled={isPending}
-            onClick={() => mutate(event._id)}
+            onClick={() => mutate(event.id)}
           >
             {isPending && <Loader className="size-4 animate-spin" />}
             Xoá

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { LogOut, Package, LayoutDashboard, UserIcon } from "lucide-react";
+import { LogOut, LayoutDashboard, UserIcon } from "lucide-react";
 
 import { User } from "@/types/user";
 import { USER_ROLE } from "@/lib/config";
@@ -62,14 +62,6 @@ export const UserSettings = ({ user }: Props) => {
             >
               <UserIcon className="size-4 group-hover:text-blue-500" />
               <p className="group-hover:text-blue-500">Xem hồ sơ</p>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => router.push("/settings/my-orders")}
-              className="group"
-            >
-              <Package className="size-4 group-hover:text-blue-500" />
-              <p className="group-hover:text-blue-500">Đơn hàng của tôi</p>
             </DropdownMenuItem>
           </>
         )}

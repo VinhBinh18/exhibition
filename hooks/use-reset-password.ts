@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-import { verifyResetToken } from "@/lib/api/auth";
+const verifyResetToken = async (..._args: unknown[]) => {
+  throw new Error("API auth đã được gỡ");
+};
 import { useAuthModal } from "@/stores/use-auth-modal";
 import { toastSuccess, toastError } from "@/components/ui/toaster";
 

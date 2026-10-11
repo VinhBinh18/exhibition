@@ -3,44 +3,30 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
-import { CategoryType } from "@/types/category";
-import { ProductType } from "@/types/product";
-import { EXPO_HOME_PAGE_SIZE, categoryLabelOf } from "@/lib/expo";
+import { ExhibitionEventRecord } from "@/types/records";
+import { EXPO_HOME_PAGE_SIZE } from "@/lib/expo";
 
 import { Input } from "@/components/ui/input";
 import { EventCard } from "@/components/expo/event-card";
 import { EventPagination } from "@/components/expo/event-pagination";
 
 type UpcomingEventsProps = {
-  products: ProductType[];
-  categories: CategoryType[];
+  events: ExhibitionEventRecord[];
 };
 
-export const UpcomingEvents = ({
-  products,
-  categories,
-}: UpcomingEventsProps) => {
+export const UpcomingEvents = ({ events }: UpcomingEventsProps) => {
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
     const keyword = query.trim().toLowerCase();
-    if (!keyword) return products;
-    return products.filter((product) => {
-      const haystack = [
-        product.name,
-        product.category,
-        categoryLabelOf(product, categories),
-        product.attributes?.city,
-        product.attributes?.venue,
-        product.attributes?.country,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(keyword);
-    });
-  }, [categories, products, query]);
+    if (!keyword) return events;
+    return events.filter((event) =>
+      `${event.name} ${event.location} ${event.description}`
+        .toLowerCase()
+        .includes(keyword)
+    );
+  }, [events, query]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / EXPO_HOME_PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -79,12 +65,8 @@ export const UpcomingEvents = ({
 
       {pageItems.length ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {pageItems.map((product) => (
-            <EventCard
-              key={product._id}
-              product={product}
-              categoryLabel={categoryLabelOf(product, categories)}
-            />
+          {pageItems.map((event) => (
+            <EventCard key={event.id} event={event} />
           ))}
         </div>
       ) : (

@@ -1,7 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "../query-keys";
-import { getBlog, getBlogs, getRelatedBlogs } from "@/lib/api/blogs";
+const getBlogs = async (..._args: unknown[]) => ({
+  data: [],
+  page: 1,
+  limit: 10,
+  total: 0,
+  totalPages: 0,
+});
+const getBlog = async (..._args: unknown[]) => null;
+const getRelatedBlogs = async (..._args: unknown[]) => [];
 
 import { PaginatedResponse } from "@/types/global";
 import { BlogType, UseBlogsParams } from "@/types/blog";
