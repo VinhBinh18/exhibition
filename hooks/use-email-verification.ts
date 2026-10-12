@@ -1,7 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const verifyEmail = async (..._args: unknown[]) => {
+const verifyEmail = async (
+  ..._args: unknown[]
+): Promise<{
+  ok: boolean;
+  data: { message?: string; description?: string };
+}> => {
   throw new Error("API auth đã được gỡ");
 };
 import { useAuthModal } from "@/stores/use-auth-modal";

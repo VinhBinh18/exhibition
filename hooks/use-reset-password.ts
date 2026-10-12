@@ -1,7 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const verifyResetToken = async (..._args: unknown[]) => {
+const verifyResetToken = async (
+  ..._args: unknown[]
+): Promise<{
+  ok: boolean;
+  data: { message?: string; description?: string };
+}> => {
   throw new Error("API auth đã được gỡ");
 };
 import { useAuthModal } from "@/stores/use-auth-modal";

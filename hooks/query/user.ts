@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "../query-keys";
 import { USER_ROLE } from "@/lib/config";
-const getMe = async (..._args: unknown[]) => null;
+const getMe = async (..._args: unknown[]): Promise<User | null> => null;
 const getUsers = async (..._args: unknown[]) => ({
   data: [],
   page: 1,

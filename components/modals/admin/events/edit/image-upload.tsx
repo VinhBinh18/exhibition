@@ -5,6 +5,11 @@ import { UseFormReturn } from "react-hook-form";
 
 import { FormType } from "./form-schema";
 
+type FormTypeWithImages = FormType & {
+  image?: File;
+  frame?: File;
+};
+
 import {
   FormField,
   FormItem,
@@ -18,7 +23,7 @@ type ImageUploadProps = {
   disabled?: boolean;
   preview: string | null;
   name: "image" | "frame";
-  form: UseFormReturn<FormType>;
+  form: UseFormReturn<FormTypeWithImages>;
   setPreview: (val: string | null) => void;
 };
 
