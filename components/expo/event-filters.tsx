@@ -68,7 +68,7 @@ export const EventFilters = ({ categories, options }: EventFiltersProps) => {
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Tìm sự kiện theo tên, ngành, địa điểm..."
+            placeholder="Tìm sự kiện theo tên"
             className="h-11 rounded-xl border-0 bg-slate-50 pl-10 shadow-none focus-visible:ring-0"
           />
         </div>
@@ -85,7 +85,7 @@ export const EventFilters = ({ categories, options }: EventFiltersProps) => {
           <SlidersHorizontal className="size-4" />
           Bộ lọc
         </div>
-        <FilterSelect
+        {/* <FilterSelect
           value={current.category}
           placeholder="Tất cả ngành"
           onChange={(value) => pushParams({ category: value })}
@@ -132,7 +132,7 @@ export const EventFilters = ({ categories, options }: EventFiltersProps) => {
             value: month,
             label: month,
           }))}
-        />
+        /> */}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 
 import { errorResponse, successResponse } from "@/app/lib/api-response";
+import { sendRegistrationNotice } from "@/lib/mail/registration-notice";
 import { normalizePhone } from "@/lib/supabase/phone";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { dbError, readJson, textOf, toClient } from "@/lib/supabase/http";
@@ -21,12 +22,11 @@ export const POST = async (req: NextRequest) => {
     const eventId = textOf(body.eventId);
     const phone = normalizePhone(body.phone);
 
-    if (!name || !email || !companyName || !description || !eventId || !phone) {
+    if (!name || !email || !companyName || !eventId || !phone) {
       return errorResponse({
         status: 400,
         message: "Thiếu thông tin đăng ký",
-        description:
-          "Cần họ tên, email, tên công ty, số điện thoại, nội dung và triển lãm.",
+        description: "Cần họ tên, email, tên công ty, số điện thoại và triển lãm.",
       });
     }
 
@@ -35,6 +35,20 @@ export const POST = async (req: NextRequest) => {
     }
 
     const supabase = supabaseAdmin();
+    const { data: actor, error: actorError } = await supabase
+      .from("users")
+      .select("id")
+      .limit(1)
+      .maybeSingle();
+
+    if (actorError) return dbError(actorError);
+    if (!actor?.id) {
+      return errorResponse({
+        status: 500,
+        message: "Chưa có người dùng để ghi nhận đăng ký",
+      });
+    }
+
     const { data: event, error: eventError } = await supabase
       .from("events")
       .select("id, name")
@@ -62,6 +76,7 @@ export const POST = async (req: NextRequest) => {
       phone,
       description,
       is_deleted: false,
+      updated_by: actor.id,
     };
 
     const clientQuery = existing?.id
@@ -73,7 +88,7 @@ export const POST = async (req: NextRequest) => {
           .single()
       : supabase
           .from("clients")
-          .insert(clientPayload)
+          .insert({ ...clientPayload, created_by: actor.id })
           .select("*")
           .single();
 
@@ -102,6 +117,7 @@ export const POST = async (req: NextRequest) => {
           .from("event_registrations")
           .update({
             is_deleted: false,
+            updated_by: actor.id,
           })
           .eq("id", deleted.id)
           .select("id")
@@ -111,6 +127,8 @@ export const POST = async (req: NextRequest) => {
           .insert({
             client_id: client.id,
             event_id: eventId,
+            created_by: actor.id,
+            updated_by: actor.id,
           })
           .select("id")
           .single();
@@ -118,10 +136,27 @@ export const POST = async (req: NextRequest) => {
     const { data: registration, error: registrationError } = await registrationQuery;
     if (registrationError) return dbError(registrationError);
 
+    try {
+      await sendRegistrationNotice({
+        name,
+        companyName,
+        email,
+        phone,
+        eventName: event.name,
+        description,
+      });
+    } catch (mailError) {
+      return errorResponse({
+        status: 502,
+        message: "Đã lưu đăng ký nhưng chưa gửi được email thông báo",
+        description: mailError instanceof Error ? mailError.message : "Lỗi gửi email",
+      });
+    }
+
     return successResponse({
       status: 201,
-      message: "Đăng ký triển lãm thành công",
-      description: `Đã ghi nhận đăng ký ${event.name}.`,
+      message: "Gửi yêu cầu thành công",
+      description: `Đã ghi nhận đăng ký ${event.name} và gửi thông báo qua email.`,
       result: {
         client: toClient(client),
         eventId,

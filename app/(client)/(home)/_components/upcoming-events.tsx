@@ -24,15 +24,18 @@ export const UpcomingEvents = ({ events }: UpcomingEventsProps) => {
     return events.filter((event) =>
       `${event.name} ${event.location} ${event.description}`
         .toLowerCase()
-        .includes(keyword)
+        .includes(keyword),
     );
   }, [events, query]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / EXPO_HOME_PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filtered.length / EXPO_HOME_PAGE_SIZE),
+  );
   const currentPage = Math.min(page, totalPages);
   const pageItems = filtered.slice(
     (currentPage - 1) * EXPO_HOME_PAGE_SIZE,
-    currentPage * EXPO_HOME_PAGE_SIZE
+    currentPage * EXPO_HOME_PAGE_SIZE,
   );
 
   return (
@@ -51,7 +54,7 @@ export const UpcomingEvents = ({ events }: UpcomingEventsProps) => {
               setQuery(event.target.value);
               setPage(1);
             }}
-            placeholder="Tìm sự kiện theo tên, ngành, địa điểm..."
+            placeholder="Tìm sự kiện theo tên"
             className="h-11 rounded-xl border-0 bg-slate-50 pl-10 shadow-none focus-visible:ring-0"
           />
         </div>
